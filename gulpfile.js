@@ -49,8 +49,9 @@ function styles(){
                 overrideBrowserlist: ['last 10 version'],
                 grid: true
             }))
-            .pipe(dest('source/styles/css'))
-            .pipe(browserSync.stream())
+           .pipe(dest('source/styles'))
+           .pipe(dest('dist/styles'))
+           .pipe(browserSync.stream())
 }
 
 function scripts(){
