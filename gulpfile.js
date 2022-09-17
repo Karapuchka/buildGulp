@@ -6,6 +6,22 @@ const autoprefixer = require('gulp-autoprefixer');
 const concat = require('gulp-concat');
 const del = require('del');
 const browserSync = require('browser-sync').create();
+const htmlmin = require('gulp-htmlmin');
+const webp = require('gulp-webp');
+
+function htmtIndex(){
+    return src('source/index.html')
+           .pipe(htmlmin({ collapseWhitespace: true }))
+           .pipe(dest('dist/'))
+           .pipe(browserSync.stream())
+}
+
+function htmtPages(){
+    return src('source/pages/**/*.html')
+           .pipe(htmlmin({ collapseWhitespace: true }))
+           .pipe(dest('dist/pages'))
+           .pipe(browserSync.stream())
+}
 
 function browsersync(){
     browserSync.init({
@@ -26,10 +42,10 @@ function watching(){
 }
 
 function styles(){
-    return src('source/styles/scss/style.scss')
-            .pipe(sass({outputStyle: 'compressed'}))
-            .pipe(concat('style.min.css'))
-            .pipe(autoprefixer({
+    return src('source/styles/style.scss')
+           .pipe(sass({outputStyle: 'compressed'}))
+           .pipe(concat('style.min.css'))
+           .pipe(autoprefixer({
                 overrideBrowserlist: ['last 10 version'],
                 grid: true
             }))
@@ -41,29 +57,37 @@ function scripts(){
     return src([               
         'source/scripts/main.js'
     ])
-        .pipe(concat('main.min.js'))
-        .pipe(uglify())
-        .pipe(dest('source/scripts'))
-        .pipe(browserSync.stream())
+           .pipe(concat('main.min.js'))
+           .pipe(uglify())
+           .pipe(dest('source/scripts'))
+           .pipe(dest('dist/scripts'))
+           .pipe(browserSync.stream())
 }
 
-function build(){
-    return src([
-        'source/index.html',
-        'source/styles/css/style.min.css',
-        'source/scripts/main.min.js',
-        'source/fonts/**/*',
-        'source/images/**/*',
-        'source/pages/*.html'
-    ], {base: 'source'})
-    .pipe(dest('dist'))
+function fonts(){
+    return src('source/fonts/**/*')
+           .pipe(dest('dist/fonts'))
+           .pipe(browserSync.stream())
 }
+
+function images(){
+    return src('source/images/**/*')
+           .pipe(webp())
+           .pipe(dest('dist/images'))
+           .pipe(browserSync.stream())
+}
+
+const build = parallel(htmtIndex, htmtPages, styles, scripts, images, fonts);
 
 exports.cleanDist = cleanDist;
 exports.watching = watching;
 exports.styles = styles;
 exports.scripts = scripts;
 exports.browsersync = browsersync;
+exports.images = images;
+exports.fonts = fonts;
+exports.htmtIndex = htmtIndex;
+exports.htmtPages = htmtPages;
 exports.build = build;
 
-exports.default = series(cleanDist, parallel(scripts, styles), build, parallel(browsersync, watching));
+exports.default = series(cleanDist, build, parallel(browsersync, watching));
