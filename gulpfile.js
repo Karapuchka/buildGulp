@@ -75,6 +75,7 @@ function images(){
     return src('source/images/**/*')
            .pipe(webp())
            .pipe(dest('dist/images'))
+           .pipe(dest('source/images'))
            .pipe(browserSync.stream())
 }
 
