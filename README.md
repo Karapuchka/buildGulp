@@ -2,140 +2,180 @@
 ___
 
 ## Содержание
-1. [Описание сборки](#buildDescription)
-3. [Использованные плагины](#plagins)
-4. [Описание работы плагинов](#descriptionPlugins)
+
+1. [Возможности сборки ](#buildDescription)
+2. [Использованные плагины](#plagins)
+3. [Список задач](#task)
+4. [Файловая система](#file)
+5. [Заключение](#end)
 
 ___
 
-## Описание сборки <a id="buildDescription"></a>
+## Возможности сборки <a id="buildDescription"></a>
+
++ Минификация HTML, CSS, JavaScript.
++ Конвертирование изображений в формат WEBP
++ Автопрефиксер JavaScript и CSS
++ Использование CSS препроцессора SASS (SCSS)
++ Стартовый шаблон
++ Локальный сервер с автообновлением при внесении изменений в файлах проекта
 ___
 
 ## Использованные плагины <a id="plagins"></a>
-1. [browser-sync](#browserSync)
-2. [del](#del)
-3. [gulp](#gulp)
-4. [gulp-autoprefixer](#gulpAutoprefixer)
-5. [gulp-concat](#gulpConcat)
-6. [gulp-sass](#gulpSass)
-7. [gulp-uglify](#gulpUglify)
-8. [gulp-webp](#gulpWebp)
-9. [sass](#sass)
-10. [gulp-htmlmin](#gulpHtmlmin)
-___
-
-## Описание работы плагинов <a id="descriptionPlugins"></a>
-
-### Browser-sync <a id="browserSync"></a>
-##### Описание:
-
-Версия пакета: 2.27.10
-[Станица на npmjs](https://www.npmjs.com/package/browser-sync)
-[Официальный сайт](https://browsersync.io/)
-[Github](https://github.com/BrowserSync/browser-sync)
-
-##### Процесс установки и настройки:
-Для установки плагина через npm используем команду:   
-
-    npm i browser-sync
-
-Затем созданием константу и экспортируем в неё browser-sync:
-
-    const browserSync = require('browser-sync').create();
-
-Далее прописываем задачу. Суть задачи заключается в обновлении сраницы браузера при внесении изменении в файлах проекта:
-
-    function browsersync(){
-        browserSync.init({
-            server: {
-                baseDir: 'source/'
-            }
-        });
-    }
 
 
-### Del <a id="del"></a>
-
-##### Описание:
-
-Версия пакета: 7.0.0
-[Станица на npmjs](https://www.npmjs.com/search?q=del)
-[Github](https://github.com/sindresorhus/del)
-
-##### Процесс установки и настройки:
-Для установки плагина через npm используем команду: 
-
-    npm i del
-
-Затем созданием константу и экспортируем в неё Del:
-
-    const del = require('del');
-
-Далее прописываем задачу. Суть задачи заключается в удалении файлов или целого католога. В нашем случае это удаление каталога "dist":
-
-    function cleanDist(){
-        return del('dist');
-    }
-
-### Gulp <a id="gulp"></a>
+### 1. Gulp <a id="gulp"></a>
 
 Версия пакета: 4.0.2
 [Станица на npmjs](https://www.npmjs.com/package/gulp)
 [Официальный сайт](https://gulpjs.com/)
 [Github](https://github.com/gulpjs/gulp)
 
-##### Процесс установки и настройки:
-Для установки плагина через npm используем команду: 
-
+Команда для установки:
+    
     npm i gulp
 
-Затем созданием константы и экспортируем в них Gulp:
-
-    const {src, parallel, series, dest, watch} = require('gulp');
-
-+ Эти константы необходимы для написания логики сборки. 
-+ src- Необходим для поиска файлов
-+ parallel - необходим для параллельного выполнения задачь 
-+ series - необходим для очерёдного выполнения задачь
-+ dest - для записи файлов в конкертный каталог
-+ watch - для наблюдения за изменениями в файла
-
-### Gulp-autoprefixer <a id="gulpAutoprefixer"></a>
-
-##### Описание:
+### 2. Gulp-autoprefixer <a id="gulpAutoprefixer"></a>
 
 Версия пакета: 8.0.0
 [Станица на npmjs](https://www.npmjs.com/package/gulp-autoprefixer)
 [Github](https://github.com/sindresorhus/gulp-autoprefixer)
 
-##### Процесс установки и настройки:
-Для установки плагина через npm используем команду: 
-
+Команда для установки:
+    
     npm i gulp-autoprefixer
 
-Затем созданием константу и экспортируем в неё Gulp-autoprefixer:
+### 3. Gulp-concat <a id="gulpConcat"></a>
 
-    const autoprefixer = require('gulp-autoprefixer');
+Версия пакета: 2.6.1
+[Станица на npmjs](https://www.npmjs.com/package/gulp-concat)
+[Github](https://github.com/gulp-community/gulp-concat)
 
-Этот плагин испозуется для автопрефикса CSS. 
-Фрагмент из задачи где используется автопрефикс:
+Команда для установки:
+    
+    npm i gulp-concat
 
-    .pipe(autoprefixer({
-        overrideBrowserlist: ['last 10 version'],
-        grid: true
-    }))
+### 4. Gulp-sass <a id="gulpSass"></a>
 
-### Gulp-concat <a id="gulpConcat"></a>
+Версия пакета: 5.1.0
+[Станица на npmjs](https://www.npmjs.com/package/gulp-sass)
+[Github](https://github.com/dlmanning/gulp-sass)
 
-### Gulp-sass <a id="gulpSass"></a>
+Команда для установки:
+    
+    npm i gulp-sass
 
-### Gulp-uglify <a id="gulpUglify"></a>
+### 5. Gulp-uglify <a id="gulpUglify"></a>
 
-### Gulp-webp <a id="gulpWebp"></a>
+Версия пакета: 3.0.2
+[Станица на npmjs](https://www.npmjs.com/package/gulp-uglify)
+[Github](https://github.com/terinjokes/gulp-uglify)
 
-### Sass <a id="sass"></a>
+Команда для установки:
+    
+    npm i gulp-uglify
 
-### Gulp-htmlmin <a id="gulpHtmlmin"></a>
+### 6. Gulp-webp <a id="gulpWebp"></a>
+
+Версия пакета: 4.0.1
+[Станица на npmjs](https://www.npmjs.com/package/gulp-webp)
+[Github](https://github.com/sindresorhus/gulp-webp#readme)
+
+Команда для установки:
+    
+    npm i gulp-webp
+
+### 7. Gulp-htmlmin <a id="gulpHtmlmin"></a>
+
+Версия пакета: 5.0.1
+[Станица на npmjs](https://www.npmjs.com/package/gulp-htmlmin)
+[Github](https://github.com/jonschlinkert/gulp-htmlmin)
+
+Команда для установки:
+    
+    npm i gulp-htmlmin
+
+### 8. Browser-sync <a id="browserSync"></a>
+
+Версия пакета: 2.27.10
+[Станица на npmjs](https://www.npmjs.com/package/browser-sync)
+[Официальный сайт](https://browsersync.io/)
+[Github](https://github.com/BrowserSync/browser-sync)
+
+Команда для установки:
+    
+    npm i browser-sync
+
+### 9. Del <a id="del"></a>
+
+Версия пакета: 6.0.0
+[Станица на npmjs](https://www.npmjs.com/search?q=del)
+[Github](https://github.com/sindresorhus/del)
+
+Команда для установки:
+    
+    npm i del
+
+### 10. Sass <a id="sass"></a>
+
+Версия пакета:  1.54.5
+[Станица на npmjs](https://www.npmjs.com/package/sass)
+[Github](https://github.com/sass/dart-sass)
+
+Команда для установки:
+    
+    npm i sass
+
 ___
 
-## Заключение
+## Список задач <a id="task"></a>
++ gulp - стандартная команда в gulp. Используется для запуска сборки.
++ build - запускает параллельно выполнение команд: htmtIndex, htmtPages, styles, scripts, images, fonts. Тем самым собирает все обработанные файлы в папку 'dist'.
++ htmtPages - выполняет обработку html файлов (за исключением index.html). Минифицирует файлы и копирует их в папку 'dist'.
++ htmtIndex - выполняет обработку файла index.html. Минифицирует файл и копирует его в папку 'dist'.
++ fonts - копирует все файлы со шрифтами и копирует их в папку 'dist'.
++ images - конвертирует файлы в формат WEBP и копирует их в папки 'dist' и 'source'. Копирование в папку 'source' необходимо для просмотра уже сконвертируемых файлов при запуске локального сервера (browsersync работает с файлами в папке 'source').
++ browsersync - создает локальный сервер. При работе использует файлы из папки 'source'.
++ scripts - обрабатывает JavaScript файлы. Выполняет автопрефис и минификацию файлов. Затем копирует обработанные файлы в папки 'dist' и 'source'.
++ styles - обрабатывает CSS файлы. Выполняет автопрефис, минификацию и преобразванние SASS(SCSS) файлов в CSS. Затем копирует обработанные файлы в папки 'dist' и 'source'.
++ watching - следит за изменениями в файлах SCSS, JavaScript, HTML.
++ cleanDist - очищает папку 'dist'.
+___
+
+## Файловая структура <a id="file"></a>
+
+```
+|- dist
+|- source
+|       |- fonts
+|       |- images
+|       |- pages
+|       |- scripts
+|       |       |- main.js
+|       |- styles
+|       |       |- nullstyles.scss
+|       |       |- style.scss
+|       |- index.html
+|- gulpfile.js
+|- package.json
+
+```
++ dist - каталог в котором храняться уже обработанные файлы.
++ source - основной каталог, в котором храниться весь код перед обработкой.
++ fonts - каталог, в котором храняться все подключенные шрифты.
++ images - каталог, в котором храняться все изображения.
++ pages - каталог, в котором храняться все HTML файлы (за исключением index.html).
++ scripts - каталог, в котором храняться все JavaScript файлы.
++ main.js - основной JavaScript файл. В котором прописывается основной скрипт.
++ styles - каталог, в котором храняться все SASS(SCSS) и CSS файлы.
++ nullstyle.scss - SASS(SCSS) файл. Необходим для обнуления стандартных стилей страницы. 
++ style.scss - основной SASS(SCSS) файл. В котором прописывается основная таблица стилей.
++ index.html - основной HTML файл.
++ gulpfile.js - файл с задачами сборки.
++ package.json - файл с настройками проекта и списком всех задач.
+
+___
+
+## Заключение <a id="end"></a>
+
+Автор сборки [Karapuchka](https://github.com/Karapuchka)
