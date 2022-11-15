@@ -79,7 +79,9 @@ function images(){
            .pipe(browserSync.stream())
 }
 
-const build = parallel(htmtIndex, htmtPages, styles, scripts, images, fonts);
+const buildLayout = series(cleanDist, htmtIndex, htmtPages, styles, scripts, images, fonts);
+
+const buildStart = series(styles, images, fonts, parallel(browsersync, watching));
 
 exports.cleanDist = cleanDist;
 exports.watching = watching;
@@ -91,5 +93,4 @@ exports.fonts = fonts;
 exports.htmtIndex = htmtIndex;
 exports.htmtPages = htmtPages;
 exports.build = build;
-
-exports.default = series(cleanDist, build, parallel(browsersync, watching));
+exports.layoutStart = layoutStart;
