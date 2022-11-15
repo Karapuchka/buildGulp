@@ -92,5 +92,5 @@ exports.images = images;
 exports.fonts = fonts;
 exports.htmtIndex = htmtIndex;
 exports.htmtPages = htmtPages;
-exports.build = build;
-exports.layoutStart = layoutStart;
+exports.buildLayout = buildLayout;
+exports.buildStart = buildStart;
