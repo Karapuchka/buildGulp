@@ -5,10 +5,10 @@ ___
 
 1. [Возможности сборки ](#buildDescription)
 2. [Инструкция по использованию](#buildStart)
-2. [Использованные плагины](#plagins)
-3. [Список задач](#task)
-4. [Файловая система](#file)
-5. [Заключение](#end)
+3. [Использованные плагины](#plagins)
+4. [Список задач](#task)
+5. [Файловая система](#file)
+6. [Заключение](#end)
 
 ___
 
@@ -22,47 +22,42 @@ ___
 
     npm install
 
-Работа плагина разделена на 2 этапа:
-1. __Разработка макета:__
+Далее запускаем сборку используя команду:
 
-На этом этапе мы верстаем макет. Не будет создана папка "dist". Нет обработки HTML и JavaScript кода. Обрабатываются только CSS, изображения и шрифты. Для запуска используется команда:
+    gulp start
 
-    gulp buildStart
+__Важно!__
+Если в работе вы создаёте несколько js файлов, то необходимо прописать пути к этим файлам в задаче "scripts":
 
-Запускается поочерёдное выполнение задач: styles, images, fonts. Затем параллельно выполняются browsersync, watching.
+    function scripts(){
+    return src([
 
-2. __Подготовка макет к публикации__
+            //Здесь небходимо указать путь к файлу
 
-На этом этапе верстка подготавливается к публикации. Осуществляется обработка HTML и JavaScript. Повторно выполняются обработки CSS, изображений и шрифтоы. Для запуска используется команда:
+            'source/scripts/main.js',  
+        ])
+        .pipe(concat('main.min.js'))
+        .pipe(uglify())
+        .pipe(dest('dist/scripts'))
+        .pipe(browserSync.stream())
+    }
 
-    gulp buildLayout
-
-Запускается поочерёдное выполнение задач: cleanDist, htmtIndex, htmtPages, styles, scripts, images, fonts.
-
-__ВАЖНО!__
-Перед выполнением команды изменить значение атрибута "src" у тега "script" для подключения обработанного JavaScript кода. 
-
-Как должно быть:
-     
-    <script type="module" src="scripts/main.min.js"></script>
-
-Атрибут "type" не обязателен.
+Файл "main.js" необходимо указывать последним. Так как в нем написан основной скрипт.
 ___
 
 ## <a id="buildDescription">__Возможности сборки__</a>
 
++ Использование CSS препроцессора SASS (SCSS).
++ Конвертирование изображений в формат WEBP.
 + Минификация HTML, CSS, JavaScript.
-+ Конвертирование изображений в формат WEBP
-+ Автопрефиксер JavaScript и CSS
-+ Использование CSS препроцессора SASS (SCSS)
++ Автопрефиксер JavaScript и CSS.
 + Стартовый шаблон
-+ Локальный сервер с автообновлением при внесении изменений в файлах проекта
 ___
 
 ## <a id="plagins">__Использованные плагины__</a>
 
 
-### <a id="gulp">__1. Gulp__</a>
+### 1. Gulp
 
 Версия пакета: 4.0.2
 [Станица на npmjs](https://www.npmjs.com/package/gulp)
@@ -73,7 +68,7 @@ ___
     
     npm i gulp
 
-### <a id="gulpAutoprefixer">__2. Gulp-autoprefixer__</a>
+### 2. Gulp-autoprefixer
 
 Версия пакета: 8.0.0
 [Станица на npmjs](https://www.npmjs.com/package/gulp-autoprefixer)
@@ -83,7 +78,7 @@ ___
     
     npm i gulp-autoprefixer
 
-### <a id="gulpConcat">__3. Gulp-concat__</a>
+### 3. Gulp-concat
 
 Версия пакета: 2.6.1
 [Станица на npmjs](https://www.npmjs.com/package/gulp-concat)
@@ -93,7 +88,7 @@ ___
     
     npm i gulp-concat
 
-### <a id="gulpSass">__4. Gulp-sass__</a>
+### 4. Gulp-sass
 
 Версия пакета: 5.1.0
 [Станица на npmjs](https://www.npmjs.com/package/gulp-sass)
@@ -103,7 +98,7 @@ ___
     
     npm i gulp-sass
 
-### <a id="gulpUglify">__5. Gulp-uglify__</a>
+### 5. Gulp-uglify
 
 Версия пакета: 3.0.2
 [Станица на npmjs](https://www.npmjs.com/package/gulp-uglify)
@@ -113,7 +108,7 @@ ___
     
     npm i gulp-uglify
 
-### <a id="gulpWebp">__6. Gulp-webp__</a>
+### 6. Gulp-webp
 
 Версия пакета: 4.0.1
 [Станица на npmjs](https://www.npmjs.com/package/gulp-webp)
@@ -123,7 +118,7 @@ ___
     
     npm i gulp-webp
 
-### <a id="gulpHtmlmin">__7. Gulp-htmlmin__</a>
+### 7. Gulp-htmlmin
 
 Версия пакета: 5.0.1
 [Станица на npmjs](https://www.npmjs.com/package/gulp-htmlmin)
@@ -133,7 +128,7 @@ ___
     
     npm i gulp-htmlmin
 
-### <a id="browserSync">__8. Browser-sync__</a>
+### 8. Browser-sync
 
 Версия пакета: 2.27.10
 [Станица на npmjs](https://www.npmjs.com/package/browser-sync)
@@ -144,7 +139,7 @@ ___
     
     npm i browser-sync
 
-### <a id="del">__9. Del__</a>
+### 9. Del
 
 Версия пакета: 6.0.0
 [Станица на npmjs](https://www.npmjs.com/search?q=del)
@@ -154,7 +149,7 @@ ___
     
     npm i del
 
-### <a id="sass">__10. Sass__</a>
+### 10. Sass
 
 Версия пакета:  1.54.5
 [Станица на npmjs](https://www.npmjs.com/package/sass)
@@ -164,20 +159,29 @@ ___
     
     npm i sass
 
+### 11. Gulp-imagemin
+
+Версия пакета:  7.1.0
+[Станица на npmjs](https://www.npmjs.com/package/gulp-imagemin)
+[Github](https://github.com/sindresorhus/gulp-imagemin)
+
+Команда для установки:
+    
+    npm i gulp-imagemin
 ___
 
 ## <a id="task">__Список задач__</a>
-+ __buildStart__ - запускает поочерёдное выполнение задач styles и images, затем параллельно выполняются browsersync и watching 
-+ __buildLayout__ - запускает поочерёдное выполнение задач: cleanDist, htmtIndex, htmtPages, styles, scripts, images, fonts. Тем самым собирает все обработанные файлы в папку 'dist'.
-+ __htmtPages__ - выполняет обработку html файлов (за исключением index.html). Минифицирует файлы и копирует их в папку 'dist'.
-+ __htmtIndex__ - выполняет обработку файла index.html. Минифицирует файл и копирует его в папку 'dist'.
-+ __fonts__ - копирует все файлы со шрифтами и копирует их в папку 'dist'.
-+ __images__ - конвертирует файлы в формат WEBP и копирует их в папки 'dist' и 'source'. Копирование в папку 'source' необходимо для просмотра уже сконвертируемых файлов при запуске локального сервера (browsersync работает с файлами в папке 'source').
-+ __browsersync__ - создает локальный сервер. При работе использует файлы из папки 'source'.
-+ __scripts__ - обрабатывает JavaScript файлы. Выполняет автопрефис и минификацию файлов. Затем копирует обработанные файлы в папки 'dist' и 'source'.
-+ __styles__ - обрабатывает CSS файлы. Выполняет автопрефис, минификацию и преобразванние SASS(SCSS) файлов в CSS. Затем копирует обработанные файлы в папки 'dist' и 'source'.
-+ __watching__ - следит за изменениями в файлах SCSS, JavaScript, HTML.
-+ __cleanDist__ - очищает папку 'dist'.
++ __browsersync__ - создает локальный сервер. При работе использует файлы из папки 'dist'.
++ __cleanDist__   - очищает папку 'dist'.
++ __watching__    - следит за изменениями в файлах SCSS, JavaScript, HTML.
++ __imgWebp__     - конвертирует файлы в формат WEBP и копирует их в папки 'dist'.
++ __scripts__     - обрабатывает JavaScript файлы. Выполняет автопрефис и минификацию файлов. Затем копирует обработанные файлы в папку 'dist'.
++ __styles__      - обрабатывает CSS файлы. Выполняет автопрефис, минификацию и преобразванние SASS(SCSS) файлов в CSS. Затем копирует обработанные файлы в папку 'dist'.
++ __images__      - сжимает изображения и копирует их в папку 'dist'.
++ __start__       - запускает все нижеперечисленные задачи.
++ __fonts__       - копирует все файлы со шрифтами и копирует их в папку 'dist'.
++ __htmt__        - выполняет обработку HTML файлов. Минифицирует их и копирует в папку 'dist'.
+
 ___
 
 ## <a id="file">__Файловая структура__</a>

@@ -1,23 +1,20 @@
 const {src, parallel, series, dest, watch} = require('gulp');
 
-const sass = require('gulp-sass')(require('sass'));
-const uglify = require('gulp-uglify');
 const autoprefixer = require('gulp-autoprefixer');
-const concat = require('gulp-concat');
-const del = require('del');
-const browserSync = require('browser-sync').create();
-const htmlmin = require('gulp-htmlmin');
-const webp = require('gulp-webp');
+const browserSync  = require('browser-sync').create();
+const imagemin     = require('gulp-imagemin');
+const htmlmin      = require('gulp-htmlmin');
+const concat       = require('gulp-concat');
+const uglify       = require('gulp-uglify');
+const webp         = require('gulp-webp');
+const sass         = require('gulp-sass')(require('sass'));
+const del          = require('del');
 
-function htmtIndex(){
+function html(){
     return src('source/index.html')
            .pipe(htmlmin({ collapseWhitespace: true }))
            .pipe(dest('dist/'))
-           .pipe(browserSync.stream())
-}
-
-function htmtPages(){
-    return src('source/pages/**/*.html')
+           .pipe(src('source/pages/**/*'))
            .pipe(htmlmin({ collapseWhitespace: true }))
            .pipe(dest('dist/pages'))
            .pipe(browserSync.stream())
@@ -26,7 +23,7 @@ function htmtPages(){
 function browsersync(){
     browserSync.init({
         server: {
-            baseDir: 'source/'
+            baseDir: 'dist/'
         }
     });
 }
@@ -37,7 +34,7 @@ function cleanDist(){
 
 function watching(){
     watch(['source/styles/scss/style.scss'], styles)
-    watch(['source/scripts/main.js'], scripts)
+    watch(['source/scripts/**/*'], scripts)
     watch(['source/index.html']).on('change', browserSync.reload)
 }
 
@@ -49,20 +46,18 @@ function styles(){
                 overrideBrowserlist: ['last 10 version'],
                 grid: true
             }))
-           .pipe(dest('source/styles'))
            .pipe(dest('dist/styles'))
            .pipe(browserSync.stream())
 }
 
 function scripts(){
     return src([               
-        'source/scripts/main.js'
-    ])
-           .pipe(concat('main.min.js'))
-           .pipe(uglify())
-           .pipe(dest('source/scripts'))
-           .pipe(dest('dist/scripts'))
-           .pipe(browserSync.stream())
+            'source/scripts/main.js',  
+        ])
+        .pipe(concat('main.min.js'))
+        .pipe(uglify())
+        .pipe(dest('dist/scripts'))
+        .pipe(browserSync.stream())
 }
 
 function fonts(){
@@ -73,24 +68,38 @@ function fonts(){
 
 function images(){
     return src('source/images/**/*')
-           .pipe(webp())
+            .pipe(imagemin([
+                  imagemin.gifsicle({interlaced: true}),
+                  imagemin.mozjpeg({quality: 75, progressive: true}),
+                  imagemin.optipng({optimizationLevel: 5}),
+                  imagemin.svgo({
+                    plugins: [
+                        {removeViewBox: true},
+                        {cleanupIDs: false}
+                    ]
+                })
+            ]))
            .pipe(dest('dist/images'))
-           .pipe(dest('source/images'))
            .pipe(browserSync.stream())
 }
 
-const buildLayout = series(cleanDist, htmtIndex, htmtPages, styles, scripts, images, fonts);
+function imgWebp(){
+    return src('source/images/**/*')
+           .pipe(webp())
+           .pipe(dest('dist/images'))
+           .pipe(browserSync.stream())
+}
 
-const buildStart = series(styles, images, fonts, parallel(browsersync, watching));
+const start  = series(cleanDist, html, styles, scripts, images, fonts, parallel(browsersync, watching));
 
-exports.cleanDist = cleanDist;
-exports.watching = watching;
-exports.styles = styles;
-exports.scripts = scripts;
 exports.browsersync = browsersync;
-exports.images = images;
-exports.fonts = fonts;
-exports.htmtIndex = htmtIndex;
-exports.htmtPages = htmtPages;
-exports.build = build;
-exports.layoutStart = layoutStart;
+exports.cleanDist   = cleanDist;
+exports.watching    = watching;
+exports.scripts     = scripts;
+exports.imgWebp     = imgWebp;
+exports.styles      = styles;
+exports.images      = images;
+exports.fonts       = fonts;
+exports.html        = html;
+
+exports.start       = start;
