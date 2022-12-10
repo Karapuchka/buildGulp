@@ -14,7 +14,12 @@ function html(){
     return src('source/index.html')
            .pipe(htmlmin({ collapseWhitespace: true }))
            .pipe(dest('dist/'))
-           .pipe(src('source/pages/**/*'))
+           .pipe(htmlPages())
+           .pipe(browserSync.stream())
+}
+
+function htmlPages(){
+    return src('source/pages/**/*')
            .pipe(htmlmin({ collapseWhitespace: true }))
            .pipe(dest('dist/pages'))
            .pipe(browserSync.stream())
@@ -51,7 +56,8 @@ function styles(){
 }
 
 function scripts(){
-    return src([               
+    return src([
+            './node_modules/mobile-detect/mobile-detect.min.js',               
             'source/scripts/main.js',  
         ])
         .pipe(concat('main.min.js'))
@@ -91,7 +97,6 @@ function imgWebp(){
 }
 
 const start  = series(cleanDist, html, styles, scripts, images, fonts, parallel(browsersync, watching));
-
 exports.browsersync = browsersync;
 exports.cleanDist   = cleanDist;
 exports.watching    = watching;
