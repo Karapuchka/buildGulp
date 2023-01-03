@@ -2,77 +2,98 @@
 
 let detect = new MobileDetect(window.navigator.userAgent)
 
-const slider = document.querySelector('.slider');
 const sliderLine = document.querySelector('.slider__line');
-const sliderBtn = document.querySelector('.slider__btn');
+const sliderBtn  = document.querySelector('.slider__btn');
+const slider     = document.querySelector('.slider');
 
 let moveSlider = 0; // Число, на которое прибавляется или отнимается положение линии слайдера по оси X
-let halfWidth = sliderLine.children[0].offsetWidth / 2; // Половина от длины элемента слайдера
-let startX = 0; // Стартовое положение X при нажатии на экран
-let lastValueX = 0; // Произведение srartX и текущего значение clientX
+let itemWidth  = sliderLine.children[0].offsetWidth // Длина одного элемента слайдера
+let lineStart  = 0; // Начальная точнка текущего слайда
+let lineEnd    = itemWidth; // Конечная точка текущего слайда
+let startX     = 0; // Стартовое положение на оски X при нажатии по экрану
+let endX       = 0; // Конечное положение на оски X при отжатии от экрана
 
 slider.ontouchstart = (event)=>{
 
-    startX = event.touches[0].clientX;
+    startX = event.touches[0].clientX; //Необходим на определения в какую сторону производится свайп
 }
 
 slider.ontouchmove = (event)=>{
 
-    if(moveSlider < sliderLine.children[0].offsetWidth && (event.touches[0].clientX - startX) < lastValueX){
+    endX = event.touches[0].clientX;
 
-        lastValueX = event.touches[0].clientX - startX;
-        moveSlider += 4;
-
-        sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
-
-        if(moveSlider > halfWidth){ // Триггер на недотягивание, если true, то слайдер вернётся на первоначальное значение
-
-            lastValueX = 0;
-
-            moveSlider = sliderLine.children[0].offsetWidth;
-
-            sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
-        }
-    } else{
-        lastValueX = event.touches[0].clientX - startX;
+    if(moveSlider > 0 && endX > startX){
 
         moveSlider -= 4;
 
         sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
-
-        if(moveSlider < halfWidth){ // Триггер на недотягивание, если true, то слайдер вернётся на первоначальное значение
-
-            lastValueX = 0;
-
-            moveSlider = 0;
-
-            sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
-        }
+        
     }
+
+    if(moveSlider < sliderLine.offsetWidth - itemWidth && endX < startX) {
+
+        moveSlider += 4;
+
+        sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
+    }
+
 }
 
 slider.ontouchend = ()=>{
 
-    if(moveSlider < halfWidth){ // Триггер на недотягивание, если true, то слайдер вернётся на первоначальное значение
+    if(startX > itemWidth / 2 && lineStart <= sliderLine.offsetWidth - itemWidth){
 
-        moveSlider = 0;
+        if(endX < itemWidth / 2){
 
-        lastValueX = 0;
+            moveSlider = lineEnd;
 
-        sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
+            sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
 
-    } else{
+            lineStart += sliderLine.children[0].offsetWidth;
+            lineEnd   += sliderLine.children[0].offsetWidth;
 
-        lastValueX = 0;
+        } else{
 
-        moveSlider = sliderLine.children[0].offsetWidth;
+            moveSlider = lineStart;
 
-        sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
+            sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
+        }
     }
+
+    if(startX < itemWidth / 2 && lineEnd >= itemWidth){
+
+        if(endX > itemWidth / 2){
+
+            moveSlider = lineStart;
+
+            sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
+
+            lineStart -= sliderLine.children[0].offsetWidth;
+            lineEnd   -= sliderLine.children[0].offsetWidth;
+            
+        } else {
+
+            moveSlider = lineEnd;
+
+            sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
+        }
+    }
+    console.log(lineStart);
+    console.log(lineEnd);
+    console.log(moveSlider);
+
 }
 
+console.log(lineStart);
+console.log(lineEnd);
+console.log(moveSlider);
+
 sliderBtn.onclick = (event)=>{
+
     if(event.target.closest('#prev') && moveSlider > 0){
+
+        lineStart -= sliderLine.children[0].offsetWidth;
+        lineEnd   -= sliderLine.children[0].offsetWidth;
 
         moveSlider -= sliderLine.children[0].offsetWidth;
 
@@ -81,6 +102,9 @@ sliderBtn.onclick = (event)=>{
     }
 
     if (event.target.closest('#next') && moveSlider < sliderLine.offsetWidth / 2) {
+
+        lineStart += sliderLine.children[0].offsetWidth;
+        lineEnd  += sliderLine.children[0].offsetWidth;
 
         moveSlider += sliderLine.children[0].offsetWidth;
 
