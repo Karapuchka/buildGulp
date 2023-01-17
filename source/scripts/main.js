@@ -1,260 +1,330 @@
-'use strict'
-
-// Анимация при загрузке страницы
-document.addEventListener('DOMContentLoaded', ()=>{
-
-    gsap.from('.menu__list__item',{
-        delay: 1,
-        duration: 1.8,
-        y: 30,
-        opacity: 0,
-        ease: 'back.out(4)',
-        stagger: {
-            from: 'left',
-            each: .5,
-        }
-    })
-})
+const sliderLine = document.querySelector('.slider__line');
+const sliderBtn  = document.querySelector('.slider__btns');
+const menu       = document.querySelector('.menu');
 
 let detect = new MobileDetect(window.navigator.userAgent)
 
-const sliderLine = document.querySelector('.slider__line');
-const sliderBtns = document.querySelector('.slider__btns');
-const slider     = document.querySelector('.slider');
-const menu       = document.querySelector('.menu');
+if(detect.mobile()){
 
-// Пермены для работы со свайпом слайдера
-let moveSlider = 0; // Число, на которое прибавляется или отнимается положение линии слайдера по оси X
-let itemWidth  = sliderLine.children[0].offsetWidth // Длина одного элемента слайдера
-let lineStart  = 0; // Начальная точнка текущего слайда
-let lineEnd    = itemWidth; // Конечная точка текущего слайда
-let startX     = 0; // Стартовое положение на оски X при нажатии по экрану
-let endX       = 0; // Конечное положение на оски X при отжатии от экрана
-
-// Проверка устройства входа (В этом фрагменте присваиваем анимацию для кнопок)
-if(!detect.mobile()){
-    
-    document.onpointerover = (event)=>{
-
+    document.onclick = (event)=>{
         if(event.target.classList.contains('btn')){
+            event.target.classList.add('btn-active');
 
-            event.target.classList.add('btn-active')
+            setTimeout(()=>{
+                event.target.classList.remove('btn-active');
+            }, 700)
+        }
+    }
+
+    document.onpointerover = (event)=>{
+        if(event.target.classList.contains('btn')){
+            event.target.classList.add('btn-active');
         }
     }
 
     document.onpointerout = (event)=>{
-
         if(event.target.classList.contains('btn')){
-
-            event.target.classList.remove('btn-active')
+            event.target.classList.remove('btn-active');
         }
     }
 
 } else {
 
-    document.onclick = (event)=>{
+    document.onpointerover = (event)=>{
         if(event.target.classList.contains('btn')){
-
             event.target.classList.add('btn-active');
+        }
+    }
 
-            setTimeout(()=>{
-                
-                event.target.classList.remove('btn-active')
-            }, 700)
+    document.onpointerout = (event)=>{
+        if(event.target.classList.contains('btn')){
+            event.target.classList.remove('btn-active');
         }
     }
 }
 
-// Событие начала свайпа (момент нажатия на экран)
-slider.ontouchstart = (event)=>{
+document.addEventListener('DOMContentLoaded', ()=>{
 
-    startX = event.touches[0].clientX; //Необходим на определения в какую сторону производится свайп
-}
-
-// Момент свайпа (самого движения пальца)
-slider.ontouchmove = (event)=>{
-
-    endX = event.touches[0].clientX;
-
-    if(moveSlider > 0 && endX > startX){
-
-        moveSlider -= 4;
-
-        sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
-        
-    }
-
-    if(moveSlider < sliderLine.offsetWidth - itemWidth && endX < startX) {
-
-        moveSlider += 4;
-
-        sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
-    }
-
-}
-
-// События при окончании свайпа (момент, когда пользователь отжимает палец от экрана)
-slider.ontouchend = ()=>{
-
-    if(startX > itemWidth / 2 && lineStart < sliderLine.offsetWidth - itemWidth){
-
-        if(endX < itemWidth / 2){
-
-            moveSlider = lineEnd;
-
-            sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
-
-            lineStart += sliderLine.children[0].offsetWidth;
-            lineEnd   += sliderLine.children[0].offsetWidth;
-
-        } else{
-
-            moveSlider = lineStart;
-
-            sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
-        }
-    }
-
-    if(startX < itemWidth / 2 && lineEnd >= itemWidth){
-
-        if(endX > itemWidth / 2){
-
-            moveSlider = lineStart;
-
-            sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
-
-            lineStart -= sliderLine.children[0].offsetWidth;
-            lineEnd   -= sliderLine.children[0].offsetWidth;
-            
-        } else {
-
-            moveSlider = lineEnd;
-
-            sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
-        }
-    }
-}
-
-// События для кнопок слайдера
-sliderBtns.onclick = (event)=>{
-
-    if(event.target.closest('#slider-btn-one') && moveSlider > 0){
-
-        lineStart = 0;
-        lineEnd   = sliderLine.children[0].offsetWidth;
-
-        moveSlider = 0;
-
-        sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
-        
-        sliderBtns.children[0].classList.add('slider__btns__btn-active');
-        sliderBtns.children[1].classList.remove('slider__btns__btn-active');
-        sliderBtns.children[2].classList.remove('slider__btns__btn-active');
-    }
-
-    if (event.target.closest('#slider-btn-two') && moveSlider < sliderLine.offsetWidth / 2) {
-
-        lineStart = sliderLine.children[0].offsetWidth;
-        lineEnd   = sliderLine.children[0].offsetWidth * 2;
-
-        moveSlider = sliderLine.children[0].offsetWidth;
-
-        sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
-
-        sliderBtns.children[0].classList.remove('slider__btns__btn-active');
-        sliderBtns.children[1].classList.add('slider__btns__btn-active');
-        sliderBtns.children[2].classList.remove('slider__btns__btn-active');
-    }
-
-    if (event.target.closest('#slider-btn-tree') && moveSlider < sliderLine.offsetWidth / 2) {
-
-        lineStart = sliderLine.children[0].offsetWidth * 2;
-        lineEnd   = sliderLine.children[0].offsetWidth * 3;
-
-        moveSlider = sliderLine.children[0].offsetWidth * 2;
-
-        sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
-
-        sliderBtns.children[0].classList.remove('slider__btns__btn-active');
-        sliderBtns.children[1].classList.remove('slider__btns__btn-active');
-        sliderBtns.children[2].classList.add('slider__btns__btn-active');
-    }
-}
+    uprise(menu.children[0].children, true); 
+})
 
 menu.onclick = (event)=>{
 
-    let idItem = event.target.getAttribute('id');
+    if(event.target.id == 'menu-item-timer'){
+        for (let i = 0; i < sliderBtn.children.length; i++) {
 
-    switch (idItem) {
+            if(sliderBtn.children[i].classList.contains('slider__btns__btn--active')){
 
-        case 'menu-item-timer':
-            
-            lineStart = 0;
-            lineEnd   = sliderLine.children[0].offsetWidth;
+                sliderBtn.children[i].classList.remove('slider__btns__btn--active');
+            }
+        }
 
-            moveSlider = 0;
+        sliderBtn.children[0].classList.add('slider__btns__btn--active');
+        sliderBtn.children[0].style.backgroundImage = 'url(' + '../images/timer-white.png' +')';
+        
+        sliderLine.style.transform = 'translateX(' + 0 + 'px)';
 
-            sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
+        closeMenu();
 
-            sliderBtns.children[0].classList.add('slider__btns__btn-active');
-            sliderBtns.children[1].classList.remove('slider__btns__btn-active');
-            sliderBtns.children[2].classList.remove('slider__btns__btn-active');
+        uprise(document.querySelectorAll('.js-timer-watch'), false); 
+        uprise(document.querySelectorAll('.js-timer-btns-one'), false); 
+        uprise(document.querySelectorAll('.js-timer-btns-two'), false); 
 
-            closingMenu();
+        uprise(document.querySelectorAll('.js-stopwatch-watch'), false); 
+        uprise(document.querySelectorAll('.js-stopwatch-btns'), false); 
+    }
 
-            break;
+    if(event.target.id == 'menu-item-stopwatch'){
+        for (let i = 0; i < sliderBtn.children.length; i++) {
 
-        case 'menu-item-stopwatch':
+            if(sliderBtn.children[i].classList.contains('slider__btns__btn--active')){
 
-            lineStart = sliderLine.children[0].offsetWidth;
-            lineEnd   = sliderLine.children[0].offsetWidth * 2;
-    
-            moveSlider = sliderLine.children[0].offsetWidth;
-    
-            sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
+                sliderBtn.children[i].classList.remove('slider__btns__btn--active');
+            }
+        }
 
-            sliderBtns.children[0].classList.remove('slider__btns__btn-active');
-            sliderBtns.children[1].classList.add('slider__btns__btn-active');
-            sliderBtns.children[2].classList.remove('slider__btns__btn-active');
+        sliderBtn.children[1].classList.add('slider__btns__btn--active');
+        sliderBtn.children[1].style.backgroundImage = 'url(' + '../images/sand-clock-white.png' +')';
+       
+        sliderLine.style.transform = 'translateX(' + -window.innerWidth + 'px)';
 
-            closingMenu();
-            
-            break;
+        closeMenu();
 
-        case 'menu-item-options':
+        uprise(document.querySelectorAll('.js-stopwatch-watch'), false); 
+        uprise(document.querySelectorAll('.js-stopwatch-btns'), false); 
 
-            lineStart = sliderLine.children[0].offsetWidth * 2;
-            lineEnd   = sliderLine.children[0].offsetWidth * 3;
+        uprise(document.querySelectorAll('.js-timer-watch'), false); 
+        uprise(document.querySelectorAll('.js-timer-btns-one'), false); 
+        uprise(document.querySelectorAll('.js-timer-btns-two'), false); 
+    }
 
-            moveSlider = sliderLine.children[0].offsetWidth * 2;
+    if(event.target.id == 'menu-item-options'){
+        for (let i = 0; i < sliderBtn.children.length; i++) {
 
-            sliderLine.style.transform = 'translateX('+ -moveSlider + 'px)';
-            
-            sliderBtns.children[0].classList.remove('slider__btns__btn-active');
-            sliderBtns.children[1].classList.remove('slider__btns__btn-active');
-            sliderBtns.children[2].classList.add('slider__btns__btn-active');
-            
-            closingMenu();
+            if(sliderBtn.children[i].classList.contains('slider__btns__btn--active')){
 
-            break;
-    
-        default:
+                sliderBtn.children[i].classList.remove('slider__btns__btn--active');
+            }
+        }
 
-            console.log('Error: не попал по кнопке. С мужчинами такое часто случается, не загоняйся по этому поводу ( ´･･)ﾉ(._.`)');
+        sliderBtn.children[2].classList.add('slider__btns__btn--active');
+        sliderBtn.children[2].style.backgroundImage = 'url(' + '../images/settings-white.png' +')';
 
-            break;
+        sliderLine.style.transform = 'translateX(' + (-window.innerWidth * 2) + 'px)';
+
+        closeMenu();
     }
 }
 
-function closingMenu(){
-    gsap.to('.menu', {
-        opacity: 0,
-        duration: .7,
-    })
+sliderBtn.onclick = (event)=>{
+
+    if(event.target.id == 'slider-btn-one'){
+
+        for (let i = 0; i < sliderBtn.children.length; i++) {
+
+            if(sliderBtn.children[i].classList.contains('slider__btns__btn--active')){
+
+                sliderBtn.children[i].classList.remove('slider__btns__btn--active');
+            }
+        }
+
+        event.target.classList.add('slider__btns__btn--active');
+        event.target.style.backgroundImage = 'url(' + '../images/timer-white.png' +')';
+
+        sliderBtn.children[1].style.backgroundImage = 'url(' + '../images/sand-clock-black.png' +')';
+        sliderBtn.children[2].style.backgroundImage = 'url(' + '../images/settings-black.png' +')';
+    
+        sliderLine.style.transform = 'translateX(' + 0 + 'px)';
+    }
+
+    if(event.target.id == 'slider-btn-two'){
+
+        for (let i = 0; i < sliderBtn.children.length; i++) {
+
+            if(sliderBtn.children[i].classList.contains('slider__btns__btn--active')){
+
+                sliderBtn.children[i].classList.remove('slider__btns__btn--active');
+            }
+        }
+
+        event.target.classList.add('slider__btns__btn--active');
+        event.target.style.backgroundImage = 'url(' + '../images/sand-clock-white.png' +')';
+
+        sliderBtn.children[0].style.backgroundImage = 'url(' + '../images/timer-black.png' +')';
+        sliderBtn.children[2].style.backgroundImage = 'url(' + '../images/settings-black.png' +')';
+    
+        sliderLine.style.transform = 'translateX(' + -window.innerWidth + 'px)';
+    }
+
+    if(event.target.id == 'slider-btn-tree'){
+
+        for (let i = 0; i < sliderBtn.children.length; i++) {
+
+            if(sliderBtn.children[i].classList.contains('slider__btns__btn--active')){
+
+                sliderBtn.children[i].classList.remove('slider__btns__btn--active');
+            }
+        }
+
+        event.target.classList.add('slider__btns__btn--active');
+        event.target.style.backgroundImage = 'url(' + '../images/settings-white.png' +')';
+        
+        sliderBtn.children[0].style.backgroundImage = 'url(' + '../images/timer-black.png' +')';
+        sliderBtn.children[1].style.backgroundImage = 'url(' + '../images/sand-clock-black.png' +')';
+    
+        sliderLine.style.transform = 'translateX(' + (-window.innerWidth * 2) + 'px)';
+    }
+}
+
+sliderLine.onclick = (event)=>{
+
+    if(event.target.classList.contains('arrow-up')){ // Анимация для всех кнопок arrow-up
+
+        event.target.classList.add('arrow-up--active');
+        
+        // Если была нажата кнопка, отвечающая за часы и при этом на табле меньше 99, то значение декрементируется
+        if((event.target.parentElement.id == 'timer-hour' || event.target.parentElement.id == 'stopwatch-hour') && +event.target.parentElement.children[1].innerText < 99){
+            
+            // Если значение меньше 9, то к новому значению будет с лева приписываться 0
+            if(+event.target.parentElement.children[1].innerText < 9){
+
+                event.target.parentElement.children[1].innerText = '0'+ (+event.target.parentElement.children[1].innerText + 1);
+
+            } else {
+
+                event.target.parentElement.children[1].innerText = +event.target.parentElement.children[1].innerText + 1;
+            }
+
+            // Если была нажата кнопка, отвечающая за часы и при этом на табле равно 99, то значение будет равно 00
+        } else if((event.target.parentElement.id == 'timer-hour' || event.target.parentElement.id == 'stopwatch-hour') && +event.target.parentElement.children[1].innerText == 99){
+
+            event.target.parentElement.children[1].innerText = '00';
+
+        } 
+
+        // Если была нажата кнопка, отвечающая за минуты или секунды и при этом на табле меньше 60, то значение декрементируется
+        if(((event.target.parentElement.id == 'timer-minute' || event.target.parentElement.id == 'stopwatch-minute') || (event.target.parentElement.id == 'timer-seconds' || event.target.parentElement.id == 'stopwatch-seconds')) && +event.target.parentElement.children[1].innerText < 60){
+            
+            if(+event.target.parentElement.children[1].innerText < 9){
+
+                event.target.parentElement.children[1].innerText = '0'+ (+event.target.parentElement.children[1].innerText + 1);
+
+            } else {
+
+                event.target.parentElement.children[1].innerText = +event.target.parentElement.children[1].innerText + 1;
+            }
+
+        } else if(((event.target.parentElement.id == 'timer-minute' || event.target.parentElement.id == 'stopwatch-minute') || (event.target.parentElement.id == 'timer-seconds' || event.target.parentElement.id == 'stopwatch-seconds')) &&  +event.target.parentElement.children[1].innerText == 60){
+
+            event.target.parentElement.children[1].innerText = '00';
+
+        } 
+
+        // Через 3 милисекунды стрелка возвращается на изначальное положение
+        setTimeout(()=>{
+
+            event.target.classList.remove('arrow-up--active')
+        }, 300);
+    }
+
+    if(event.target.classList.contains('arrow-down')){ // Анимация для всех кнопок arrow-down
+
+        event.target.classList.add('arrow-down--active');
+
+        if((event.target.parentElement.id == 'timer-hour' || event.target.parentElement.id == 'stopwatch-hour') && +event.target.parentElement.children[1].innerText > 0){
+
+            if(+event.target.parentElement.children[1].innerText <= 10){
+
+                event.target.parentElement.children[1].innerText = '0'+ (+event.target.parentElement.children[1].innerText - 1);
+
+            } else {
+
+                event.target.parentElement.children[1].innerText = +event.target.parentElement.children[1].innerText - 1;
+            }
+
+        } else if((event.target.parentElement.id == 'timer-hour' || event.target.parentElement.id == 'stopwatch-hour') && +event.target.parentElement.children[1].innerText == 0){
+
+            event.target.parentElement.children[1].innerText = 99;
+        }
+
+        if(((event.target.parentElement.id == 'timer-minute' || event.target.parentElement.id == 'stopwatch-minute') || (event.target.parentElement.id == 'timer-seconds' || event.target.parentElement.id == 'stopwatch-seconds')) && +event.target.parentElement.children[1].innerText > 0){
+            
+            if(+event.target.parentElement.children[1].innerText <= 10){
+
+                event.target.parentElement.children[1].innerText = '0'+ (+event.target.parentElement.children[1].innerText - 1);
+
+            } else {
+
+                event.target.parentElement.children[1].innerText = +event.target.parentElement.children[1].innerText - 1;
+            }
+
+        } else if(((event.target.parentElement.id == 'timer-minute' || event.target.parentElement.id == 'stopwatch-minute') || (event.target.parentElement.id == 'timer-seconds' || event.target.parentElement.id == 'stopwatch-seconds')) &&  +event.target.parentElement.children[1].innerText == 0){
+
+            event.target.parentElement.children[1].innerText = 60;
+
+        } 
+
+        setTimeout(()=>{
+
+            event.target.classList.remove('arrow-down--active')
+        }, 300);
+    }
+
+    // Добавление времени для таймера
+    if(event.target.id == 'timer-layout-10'){
+
+        event.target.parentElement.parentElement.children[0].children[1].children[1].innerText = 10;
+    }
+
+    if(event.target.id == 'timer-layout-15'){
+
+        event.target.parentElement.parentElement.children[0].children[1].children[1].innerText = 15;
+    }
+
+    if(event.target.id == 'timer-layout-20'){
+
+        event.target.parentElement.parentElement.children[0].children[1].children[1].innerText = 20;
+    }
+
+    // Удаление значения из таймера
+    if(event.target.id == 'timer-delete'){
+
+        event.target.parentElement.parentElement.children[0].children[0].children[1].innerText = '00';
+        event.target.parentElement.parentElement.children[0].children[1].children[1].innerText = '00';
+        event.target.parentElement.parentElement.children[0].children[2].children[1].innerText = '00';
+    }
+}
+
+
+function uprise(collection, delay){ // Функция для анимации появления элементов
+
+    for (let i = 0; i < collection.length; i++) {
+    
+        collection[i].classList.remove('hidden');
+
+        collection[i].classList.add('uprise');
+
+        if(delay){
+
+            collection[i].style.transitionDelay = `${i*.6}s`;
+        } 
+    }
+}
+
+function closeMenu(){
+
+    menu.style.opacity = 0;
 
     setTimeout(()=>{
-        gsap.to('.menu', {
-            display: 'none',
-        })
-    })
+        menu.style.display = 'none';
+    }, 800)
+}
+
+// Дописать функции старта
+function timerStart(){
+
+}
+
+function stopwatchStart(){
+
 }
