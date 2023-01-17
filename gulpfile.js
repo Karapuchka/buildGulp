@@ -31,7 +31,7 @@ function browsersync(){
             baseDir: 'dist/'
         }
     });
-}
+} 
 
 function cleanDist(){
     return del('dist');
